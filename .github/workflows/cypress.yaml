@@ -1,4 +1,4 @@
-name: End-to-end-Pararallel
+name: End-to-end-Parallel
 on: push
 jobs:
   cypress-run:
@@ -6,34 +6,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2] # Índices para os chunks
+        index: [0, 1, 2] # Divisão dos testes em 3 chunks
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache Node Modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install Dependencies
-        run: npm ci
-
-      - name: Cache Cypress
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
+        run: npm install
 
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/**/*.cy.js
         env:
-          SPLIT: 3 # Número de chunks
+          SPLIT: 3 # Número total de chunks
           SPLIT_INDEX: ${{ matrix.index }}
