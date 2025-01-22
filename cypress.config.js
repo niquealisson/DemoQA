@@ -10,18 +10,15 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // Configuração do cypress-split
       cypressSplit(on, config);
-
       // Tasks personalizadas
       on("task", {
         downloadFile,
         verifyDownloadTask,
-
         // Verifica se o arquivo existe
         isFileExist(fileName) {
           return fs.existsSync(fileName);
         },
       });
-
       // Retorna a configuração atualizada
       return config;
     },
