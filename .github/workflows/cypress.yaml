@@ -1,13 +1,17 @@
-name: Sanity Build
+name: End-to-end-Pararallel
 on: push
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Cypress run
+      - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
-        with:
-          command: npx cypress run
+        env:
+          SPLIT: ${{ matrix.containers }}
+          SPLIT_INDEX: ${{ matrix.containers }}
