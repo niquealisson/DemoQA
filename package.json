@@ -1,0 +1,19 @@
+{
+  "name": "nova-pasta",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "DownloadUpload": "npx cypress run --spec 'cypress/e2e/elements/downloadUploadTest.cy.js'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "cy-verify-downloads": "^0.2.6",
+    "cypress": "^13.16.1",
+    "cypress-downloadfile": "^1.2.4",
+    "cypress-file-upload": "^5.0.8"
+  }
+}
