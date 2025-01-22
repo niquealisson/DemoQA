@@ -1,24 +1,23 @@
 const { defineConfig } = require("cypress");
-const { downloadFile } = require('cypress-downloadfile/lib/addPlugin');
-const { verifyDownloadTask } = require('cy-verify-downloads');
-const fs = require('fs');
-const cypressSplit = require('cypress-split');
+const { downloadFile } = require("cypress-downloadfile/lib/addPlugin");
+const { verifyDownloadTask } = require("cy-verify-downloads");
+const fs = require("fs");
+const cypressSplit = require("cypress-split");
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://demoqa.com/',
+    baseUrl: "https://demoqa.com/",
     setupNodeEvents(on, config) {
-      // Configura o cypress-split
+      // Configuração do cypress-split
       cypressSplit(on, config);
 
-      // Adiciona as tasks personalizadas
-      on('task', {
+      // Tasks personalizadas
+      on("task", {
         downloadFile,
         verifyDownloadTask,
 
-        // Task para verificar a existência de um arquivo
+        // Verifica se o arquivo existe
         isFileExist(fileName) {
-          // Retorna se o arquivo existe no caminho especificado
           return fs.existsSync(fileName);
         },
       });
@@ -27,6 +26,6 @@ module.exports = defineConfig({
       return config;
     },
     chromeWebSecurity: false,
-    downloadsFolder: 'cypress/downloads',
+    downloadsFolder: "cypress/downloads",
   },
 });
