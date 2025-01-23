@@ -1,12 +1,15 @@
 name: End-to-end-Parallel
+
 on: push
+
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2] 
+        index: [0, 1, 2]  # Ajuste o número de chunks conforme necessário
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,8 +20,12 @@ jobs:
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          spec: cypress/e2e/**/*.cy.js
+          spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
+          record: true  # Ativa o registro no Cypress Dashboard
+          parallel: true  # Ativa a execução paralela
+          group: "e2e-tests"  # Nome do grupo de testes, para associar os resultados no Dashboard
         env:
-          SPLIT: 3 # Número total de chunks
-          SPLIT_INDEX: ${{ matrix.index }}
-          
+          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
+          SPLIT: 3  # Total de chunks (ajuste conforme necessário)
+          SPLIT_INDEX: ${{ matrix.index }}  # Índice para dividir os testes
+          CYPRESS_BROWSER: chrome  # Define o navegador para os testes (pode ser "electron", "chrome", "firefox", etc.)
