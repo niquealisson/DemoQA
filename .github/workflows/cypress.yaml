@@ -6,18 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2]  # Aqui você define os chunks que deseja dividir
-        include:
-          - chunk: 0
-            start: 0
-            end: 50
-          - chunk: 1
-            start: 51
-            end: 100
-          - chunk: 2
-            start: 101
-            end: 150  # Exemplo de como você pode dividir as execuções em diferentes chunks de forma manual
-
+        index: [0, 1, 2] 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,12 +17,8 @@ jobs:
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          spec: "cypress/e2e/**/*.cy.js"
-          record: true
-          parallel: true  # Isso ativa a execução paralela
-          group: "e2e-tests"
+          spec: cypress/e2e/**/*.cy.js
         env:
-          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b
-          SPLIT: 3
-          SPLIT_INDEX: ${{ matrix.index }}  # Divide os testes de acordo com o index
-
+          SPLIT: 3 # Número total de chunks
+          SPLIT_INDEX: ${{ matrix.index }}
+          
