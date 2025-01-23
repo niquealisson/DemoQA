@@ -22,7 +22,6 @@ jobs:
         with:
           spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
           record: true  # Ativa o registro no Cypress Dashboard
-          parallel: true  # Ativa a execução paralela
           group: "e2e-tests"  # Nome do grupo de testes, para associar os resultados no Dashboard
         env:
           CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
