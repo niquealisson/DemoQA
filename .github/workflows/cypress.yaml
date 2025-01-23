@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2]  # Ajuste o número de chunks conforme necessário
+        index: [0, 1, 2]  # 3 jobs no total, mas você pode ajustar esse número
 
     steps:
       - name: Checkout
@@ -20,8 +20,14 @@ jobs:
       - name: Run Cypress tests in parallel
         uses: cypress-io/github-action@v6
         with:
-          spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
+          # Especifica o diretório dos testes e divide a execução entre os jobs
+          spec: |
+            cypress/e2e/**/*.cy.js
+            # Define a quantidade total de chunks e qual índice cada job executa
           record: true  # Habilita o envio para o Cypress Cloud
           parallel: true  # Ativa execução paralela
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Chave segura para o Cypress Cloud
+          # Passa a chave de gravação de forma segura
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  
+          SPLIT: 3  # Número total de chunks, ajustado para o número de jobs
+          SPLIT_INDEX: ${{ matrix.index }}  # Índice do job atual, começando de 0, 1, 2
