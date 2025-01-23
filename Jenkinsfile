@@ -1,5 +1,5 @@
 pipeline {
-    agent { label '{functional_node}' }  // Definir o agente principal
+    agent any  // Definir o agente principal
 
     stages {
         stage('TEST') {
