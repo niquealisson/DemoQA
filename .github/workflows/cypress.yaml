@@ -1,48 +1,25 @@
 name: End-to-end-Parallel
-
 on: push
-
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2]  # Ajuste o número de chunks conforme necessário
-
+        index: [0, 1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
       - name: Install Dependencies
-        run: npm ci  # Use npm ci para garantir uma instalação limpa
+        run: |
+          npm install
+          npx cypress run --record --key b5ed460d-e18c-4091-957d-8af1fe8e965
 
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
-          record: true  # Ativa o registro dos resultados no Cypress Dashboard
-          parallel: true  # Ativa a execução paralela
-          group: "e2e-tests"  # Nome do grupo de testes, para associar os resultados no Dashboard
+          spec: cypress/e2e/**/*.cy.js
         env:
-          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
-          SPLIT: 3  # Total de chunks (ajuste conforme necessário)
-          SPLIT_INDEX: ${{ matrix.index }}  # Índice para dividir os testes
-          CYPRESS_BROWSER: chrome  # Define o navegador para os testes (pode ser "electron", "chrome", "firefox", etc.)
-
-      - name: Upload results to Cypress Dashboard
-        uses: cypress-io/github-action@v6
-        with:
-          record: true
-          parallel: true
-          group: "e2e-tests"
-        env:
-          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
+          SPLIT: 3 # Número total de chunks
+          SPLIT_INDEX: ${{ matrix.index }}
