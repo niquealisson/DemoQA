@@ -1,16 +1,26 @@
 pipeline {
-   agent any
+    agent any
 
-   stages {
-       stage('Dependencies') {
-           steps {
-               sh 'npm i'
-           }
-       }
-       stage('e2e Tests') {
-           steps {
-               sh 'npm run cypress:run'
-           }
-       }
-   }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Grant Permissions') {
+            steps {
+                sh 'chmod +x ./node_modules/.bin/cypress'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'npm run cypress:run'
+            }
+        }
+    }
 }
