@@ -1,23 +1,23 @@
 pipeline {
-  agent any // Usa qualquer nó configurado no Jenkins
+   agent any
 
-  stages {
-    stage('build') {
-      steps {
-        echo "Running build ${env.BUILD_ID} on ${env.JENKINS_URL}"
-        sh 'npm ci'
-        sh 'npm run cy:verify'
-      }
-    }
+   tools {nodejs "nodejs21"}
 
-    stage('cypress tests') {
-      steps {
-        dir('TESTS') {
-          git branch: 'main',
-              url: 'https://github.com/niquealisson/DemoQA.git'
-        }
-        sh 'NO_COLOR=1 cd TESTS && npm run cypress run'
-      }
-    }
-  }
+   stages {
+       stage('Dependencies') {
+           steps {
+               sh 'npm i'
+           }
+       }
+       stage('e2e Tests') {
+           steps {
+               sh 'npm run cy:cloud'
+           }
+       }
+       stage('e2e Tests 2') {
+           steps {
+               sh 'npm run cy:run'
+           }
+       }
+   }
 }
