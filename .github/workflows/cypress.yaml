@@ -6,15 +6,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2]
+        index: [0, 1, 2] 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: |
-          npm install
-          npx cypress run --record --key b5ed460d-e18c-4091-957d-8af1fe8e965
+        run: npm install
 
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
@@ -23,3 +21,4 @@ jobs:
         env:
           SPLIT: 3 # Número total de chunks
           SPLIT_INDEX: ${{ matrix.index }}
+          
