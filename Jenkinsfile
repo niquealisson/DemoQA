@@ -1,22 +1,41 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-                sh 'npx cypress install --force'  // Forçar a instalação do Cypress
-            }
-        }
-        stage('Run Cypress Tests') {
-            steps {
-                sh 'npx cypress run'
-            }
-        }
-        stage('Run Download and Upload Test') {
-            steps {
-                sh 'npm run DownloadUpload'
-            }
-        }
+    agent {
+        label '{functional_node}'
     }
+        stages {
+            stage('TEST') {
+                agent {
+                        docker {
+                            image 'cypress/base:20.9.0'
+                        }
+                }
+                steps{
+                    git branch: 'development',
+                    credentialsId: '{redacted}',
+                    url: '{URL}'
+
+                    sh 'ng serve'
+                    sh 'npm i'
+                    sh 'npm run cypress:run'
+                }
+
+            }
+
+            stage('Build and Deploy Docker') {
+                steps {
+                    agent {
+                        label '{functional_node}'
+                    }
+                    git branch: 'development',
+                    credentialsId: '{redacted}',
+                    url: '{URL}'
+
+                    sh 'cp -f /apps/jenkins/workspace/"${JOB_NAME}"/src/environments/environment.ts /apps/jenkins/workspace/"${JOB_NAME}"/src/environments/environment.prod.ts'
+                    sh 'docker build . -t {just_a_name}:latest '
+                    sh 'docker rm -vf $(docker ps -a -q --filter="name={just_a_name}")'
+                    sh 'docker run -d --restart unless-stopped -p 90:80 --name {just_a_name} {just_a_name}:latest'
+                    sh 'docker system prune -f'
+                }
+            }
+        }
 }
