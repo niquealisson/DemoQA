@@ -1,39 +1,48 @@
 name: End-to-end-Parallel
+
 on: push
+
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2]  # Aqui você define os chunks que deseja dividir
-        include:
-          - chunk: 0
-            start: 0
-            end: 50
-          - chunk: 1
-            start: 51
-            end: 100
-          - chunk: 2
-            start: 101
-            end: 150  # Exemplo de como você pode dividir as execuções em diferentes chunks de forma manual
+        index: [0, 1, 2]  # Ajuste o número de chunks conforme necessário
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
       - name: Install Dependencies
-        run: npm install
+        run: npm ci  # Use npm ci para garantir uma instalação limpa
 
       - name: Run split Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          spec: "cypress/e2e/**/*.cy.js"
+          spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
+          record: true  # Ativa o registro dos resultados no Cypress Dashboard
+          parallel: true  # Ativa a execução paralela
+          group: "e2e-tests"  # Nome do grupo de testes, para associar os resultados no Dashboard
+        env:
+          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
+          SPLIT: 3  # Total de chunks (ajuste conforme necessário)
+          SPLIT_INDEX: ${{ matrix.index }}  # Índice para dividir os testes
+          CYPRESS_BROWSER: chrome  # Define o navegador para os testes (pode ser "electron", "chrome", "firefox", etc.)
+
+      - name: Upload results to Cypress Dashboard
+        uses: cypress-io/github-action@v6
+        with:
           record: true
-          parallel: true  # Isso ativa a execução paralela
+          parallel: true
           group: "e2e-tests"
         env:
-          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b
-          SPLIT: 3
-          SPLIT_INDEX: ${{ matrix.index }}  # Divide os testes de acordo com o index
-
+          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
