@@ -5,6 +5,7 @@ const fs = require("fs");
 const cypressSplit = require("cypress-split");
 
 module.exports = defineConfig({
+  projectId: "k4uzi7",
   e2e: {
     baseUrl: "https://demoqa.com/",
     setupNodeEvents(on, config) {
