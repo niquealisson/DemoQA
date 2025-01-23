@@ -4,6 +4,8 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
+                // Garantir permissão para o Cypress
+                sh 'chmod +x ./node_modules/.bin/cypress'
                 sh 'npm install'
             }
         }
