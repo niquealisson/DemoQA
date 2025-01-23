@@ -49,7 +49,7 @@ stages {
                 // Enable ANSI color for this stage
                 ansiColor('xterm') {
                     // Run Cypress tests
-                    bat 'npx cypress run
+                    bat 'npx cypress run'
                 }
             }
         }
