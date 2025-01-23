@@ -7,9 +7,9 @@ pipeline {
                sh 'npm i'
            }
        }
-       stage('e2e Tests 2') {
+       stage('e2e Tests') {
            steps {
-               sh 'npm run cy:run'
+               sh 'npm run cypress:run'
            }
        }
    }
