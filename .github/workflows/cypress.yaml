@@ -17,14 +17,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run split Cypress tests
+      - name: Run Cypress tests in parallel
         uses: cypress-io/github-action@v6
         with:
           spec: cypress/e2e/**/*.cy.js  # Caminho para todos os arquivos de teste
-          record: true  # Ativa o registro no Cypress Dashboard
-          group: "e2e-tests"  # Nome do grupo de testes, para associar os resultados no Dashboard
+          record: true  # Habilita o envio para o Cypress Cloud
+          parallel: true  # Ativa execução paralela
         env:
-          CYPRESS_RECORD_KEY: b5ed460d-e18c-4091-957d-8af1fe8e965b  # Chave de gravação do seu projeto no Cypress Dashboard
-          SPLIT: 3  # Total de chunks (ajuste conforme necessário)
-          SPLIT_INDEX: ${{ matrix.index }}  # Índice para dividir os testes
-          CYPRESS_BROWSER: chrome  # Define o navegador para os testes (pode ser "electron", "chrome", "firefox", etc.)
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}  # Chave segura para o Cypress Cloud
